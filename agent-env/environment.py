@@ -1,61 +1,81 @@
-from data import classData, classRoomData
+from data import subjectData, lectureRoomData
+from LectureRoom import *
+from Subject import Subject
 
-classDataCategory = classData[0]
-classRoomCategory = classRoomData[0]
+theorySubjects = {}
+practiceSubjects = {}
+lectureRooms = {}
+lectureRoomsForSorting = []
 
-subjects = { }
-rooms = { }
-
-def hasPractice(subject):
-    return subject[2] != "0"
-
-def isDesignSubject(code):
-    designCode = [ "공학설계", "졸업설계" ]
-    for i in designCode:
-        if i in code:
-            return True
+# 해당 과목이 설계 과목인지 판단한다.
+# @param
+# subject : 과목
+# @return
+# 해당 과목이 설계 과목이면 True 반환
+def isDesignSubject(subject):
+    designSubject = [ "공학설계", "졸업설계" ]
+    if subject.name in designSubject:
+        return True
     return False
 
-def printDetail(item):
-    print(item)
-    detail = subjects[item] if item in subjects else rooms[item]
-    for (k, v) in detail.items():
-        print(str.format("{}: {}", k, v))
+# 과목을 전처리한다.
+# @param
+# data : SubjectData에 있는 데이터
+def preprocessSubject(data):
+    isPractice = True if data[2] != "0" else False
+    lectureRoom = lectureRooms[data[-2]] if data[-2] != "" and data[-2] != "X" else None
 
-def preprocessSubject(subject):
-    name = str.format("{}-{}-T", subject[0], subject[3])
-    detail = {
-        "time" : int(subject[1]),
-        "capacity" : int(subject[4]),
-        "professor" : subject[-3],
-        "classroom" : subject[-2],
-        "start" : subject[-1]
-    }
-    subjects[name] = detail
+    # 이론 과목
+    subject = Subject(
+        name = data[0],
+        time = int(data[1]),
+        isPractice = False,
+        number = data[3],
+        capacity = int(data[4]),
+        lectureRoom = lectureRoom,
+        startTime = data[-1]
+    )
+    theorySubjects[subject.ID] = subject
 
-    if isDesignSubject(name) == False and hasPractice(subject):
-        practicename = name[:-1] + "P"
-        detail["time"] = int(subject[2])
-        subjects[practicename] = detail
+    # 실습 과목
+    if isDesignSubject(subject) == False and isPractice:
+        subject.time = int(data[2])
+        subject.isPractice = True
+        subject.startTime = None
+        practiceSubjects[subject.ID] = subject
 
-def preprocessRoom(room):
-    name = room[-1]
-    detail = {
-        "lectureroom": room[0],
-        "capacity": room[1],
-        "isLab": True if room[2] == "o" else False,
-        "time": []
-    }
-    rooms[name] = detail
+# 강의실을 전처리한다.
+# @param
+# data : LectureRoomData에 있는 데이터    
+def preprocessRoom(data):
+    lectureRoom = LectureRoom(
+        name = data[-1],
+        number = data[0],
+        capacity = int(data[1]),
+        canPractice = True if data[2] == "o" else False
+    )
+    lectureRooms[lectureRoom.name] = lectureRoom
+    lectureRoomsForSorting.append((lectureRoom.capacity, lectureRoom.name))
 
-for subject in classData[1:]:
-    preprocessSubject(subject)
-for room in classRoomData[1:]:
+for room in lectureRoomData[1:]:
     preprocessRoom(room)
+lectureRoomsForSorting.sort()
 
-for subject in subjects:
-    printDetail(subject)
+for subject in subjectData[1:]:
+    preprocessSubject(subject)
 
-print("==========================================")
-for room in rooms:
-    printDetail(room)
+if __name__ == "__main__":
+    print("------------------Room-------------------")
+    for k, v in lectureRooms.items():
+        v.printDetail()
+    for room in lectureRoomsForSorting:
+        print(room)
+
+    print("------------------TheorySubject----------------")
+    for k, v in theorySubjects.items():
+        v.printDetail()
+        print("---------------------")
+    print("------------------PracticeSubject---------------")
+    for k, v in practiceSubjects.items():
+        v.printDetail()
+        print("---------------------")

@@ -9,12 +9,12 @@ def readCsvFile(filename):
             d.append(line)
     return d
 
-classData = readCsvFile('classData.csv')
-classRoomData = readCsvFile('classRoomData.csv')
+subjectData = readCsvFile('SubjectData.csv')
+lectureRoomData = readCsvFile('LectureRoomData.csv')
 
 if __name__ == "__main__":
-    for line in classData:
+    for line in subjectData:
         print(line)
     print('------------------------------')
-    for line in classRoomData:
+    for line in lectureRoomData:
         print(line)
