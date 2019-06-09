@@ -18,4 +18,5 @@ class Subject:
         print("Capacity:", self.capacity)
         print("LectureRoom:", self.lectureRoom.name if self.lectureRoom != None else None)
         print("startTime:", self.startTime)
+
     
