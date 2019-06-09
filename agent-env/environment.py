@@ -1,6 +1,10 @@
-from data import classData
+from data import classData, classRoomData
+
+classDataCategory = classData[0]
+classRoomCategory = classRoomData[0]
 
 subjects = { }
+rooms = { }
 
 def hasPractice(subject):
     return subject[2] != "0"
@@ -12,13 +16,13 @@ def isDesignSubject(code):
             return True
     return False
 
-def printDetail(subject):
-    print(subject)
-    detail = subjects[subject]
+def printDetail(item):
+    print(item)
+    detail = subjects[item] if item in subjects else rooms[item]
     for (k, v) in detail.items():
         print(str.format("{}: {}", k, v))
 
-def preprocessData(subject):
+def preprocessSubject(subject):
     name = str.format("{}-{}-T", subject[0], subject[3])
     detail = {
         "time" : int(subject[1]),
@@ -34,7 +38,24 @@ def preprocessData(subject):
         detail["time"] = int(subject[2])
         subjects[practicename] = detail
 
+def preprocessRoom(room):
+    name = room[-1]
+    detail = {
+        "lectureroom": room[0],
+        "capacity": room[1],
+        "isLab": True if room[2] == "o" else False,
+        "time": []
+    }
+    rooms[name] = detail
 
-for i in range(1, len(classData)):
-    subject = classData[i]
-    preprocessData(subject)
+for subject in classData[1:]:
+    preprocessSubject(subject)
+for room in classRoomData[1:]:
+    preprocessRoom(room)
+
+for subject in subjects:
+    printDetail(subject)
+
+print("==========================================")
+for room in rooms:
+    printDetail(room)
