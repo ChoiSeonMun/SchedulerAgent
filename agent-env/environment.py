@@ -1,4 +1,4 @@
-from data import subjectData, lectureRoomData
+from csv_process import subjectData, lectureRoomData
 from LectureRoom import *
 from Subject import Subject
 
@@ -7,14 +7,13 @@ practiceSubjects = {}
 lectureRooms = {}
 lectureRoomsForSorting = []
 
-# 해당 과목이 설계 과목인지 판단한다.
+# 해당 과목이 공학설계 혹은 졸업설계 과목인지 판단한다.
 # @param
 # subject : 과목
 # @return
-# 해당 과목이 설계 과목이면 True 반환
+# 해당 과목이 공학설계 혹은 졸업설계면 True 반환
 def isDesignSubject(subject):
-    designSubject = [ "공학설계", "졸업설계" ]
-    if subject.name in designSubject:
+    if "캡스톤디자인" in subject.name:
         return True
     return False
 
@@ -39,10 +38,16 @@ def preprocessSubject(data):
 
     # 실습 과목
     if isDesignSubject(subject) == False and isPractice:
-        subject.time = int(data[2])
-        subject.isPractice = True
-        subject.startTime = None
-        practiceSubjects[subject.ID] = subject
+        practice = Subject(
+            name = data[0],
+            time = int(data[2]),
+            isPractice = True,
+            number = data[3],
+            capacity = int(data[4]),
+            lectureRoom = lectureRoom,
+            startTime = None
+        )
+        practiceSubjects[practice.ID] = practice
 
 # 강의실을 전처리한다.
 # @param

@@ -1,5 +1,12 @@
 import csv
 
+def writeCsvFile(filename, lines):
+    filename = "./Result/" + filename
+    with open(filename, 'w', encoding = 'utf-8', newline = '') as f:
+        wr = csv.writer(f)
+        for line in lines:
+            wr.writerow(line)
+
 def readCsvFile(filename):
     filename = './Data/' + filename
     d = []
@@ -18,3 +25,5 @@ if __name__ == "__main__":
     print('------------------------------')
     for line in lectureRoomData:
         print(line)
+
+    writeCsvFile("Result1.csv", subjectData)

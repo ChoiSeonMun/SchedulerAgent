@@ -1,3 +1,7 @@
+from Day import Day
+from csv_process import subjectData
+from environment import *
+
 class Subject:
     def __init__(self, name, time, isPractice, number, capacity, lectureRoom, startTime):
         self.name = name                # 과목명
@@ -19,4 +23,26 @@ class Subject:
         print("LectureRoom:", self.lectureRoom.name if self.lectureRoom != None else None)
         print("startTime:", self.startTime)
 
+    def setStartTime(self, day, start):
+        day = Day.getName(day)
+        self.startTime = day + str(start)
+
+    @staticmethod
+    def toListForCsv(theory, practice):
+        lines = []
+        
+        # 카테고리 추가
+        lines.append(subjectData[0])
+        for data in subjectData[1:]:
+            # 이론 과목과 실습 과목을 가져온다.
+            subjectID = data[0] + data[3]
+            t = theory[subjectID]
+            p = practice.get(subjectID)
+
+            data[-2] = (t.lectureRoom.name if t.lectureRoom != None else "X") + (' ' + p.lectureRoom.name if p != None else "")
+            data[-1] = t.startTime + (' ' + p.startTime if p != None else "")
+
+            lines.append(data)
+
+        return lines
     
