@@ -36,3 +36,12 @@ class LectureRoom:
         print("CanPractice:", self.canPractice)
         print("Capacity:", self.capacity)
         print("Used:", self.used)
+
+    # 강의실의 완전한 호실을 반환한다.
+    # @return
+    # 2412일 시, 2공학관 412호이고, 그외에는 담헌실학관 ~호이다.
+    def getCompleteLectureRoomNumber(self):
+        if len(self.number) == 4:
+            return str.format("2공학관 {}호", self.number[1:])
+        else:
+            return str.format("담헌실학관 {}호", self.number)
