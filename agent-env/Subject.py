@@ -37,10 +37,13 @@ class Subject:
             # 이론 과목과 실습 과목을 가져온다.
             subjectID = data[0] + data[3]
             t = theory[subjectID]
-            p = practice.get(subjectID)
+            p = practice.get(subjectID)            
 
-            data[-2] = (t.lectureRoom.name if t.lectureRoom != None else "X") + ('-' + p.lectureRoom.name if p != None else "")
-            data[-1] = t.startTime + (' ' + p.startTime if p != None else "")
+            tRoom = t.lectureRoom if t else None
+            pRoom = p.lectureRoom if p else None
+            data[-2] = str.format("{}{}", tRoom.getCompleteLectureRoomNumber() if tRoom else "X",
+                                        '-' + pRoom.getCompleteLectureRoomNumber() if p else "")
+            data[-1] = t.startTime + (' ' + p.startTime if p else "")
 
             lines.append(data)
 
