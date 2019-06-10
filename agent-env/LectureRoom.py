@@ -41,7 +41,7 @@ class LectureRoom:
     # @return
     # 2412일 시, 2공학관 412호이고, 그외에는 담헌실학관 ~호이다.
     def getCompleteLectureRoomNumber(self):
-        if len(self.number) == 4:
+        if len(self.number) == 4 or len(self.number) == 5:
             return str.format("2공학관 {}호", self.number[1:])
         else:
             return str.format("담헌실학관 {}호", self.number)

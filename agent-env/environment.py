@@ -4,8 +4,8 @@ from Subject import Subject
 
 theorySubjects = {}
 practiceSubjects = {}
-lectureRooms = {}
-lectureRoomsForSorting = []
+roomsForTheory = []
+roomsForPractice = []
 
 # 해당 과목이 공학설계 혹은 졸업설계 과목인지 판단한다.
 # @param
@@ -22,7 +22,20 @@ def isDesignSubject(subject):
 # data : SubjectData에 있는 데이터
 def preprocessSubject(data):
     isPractice = True if data[2] != "0" else False
-    lectureRoom = lectureRooms[data[-2]] if data[-2] != "" and data[-2] != "X" else None
+
+    # 강의실이 미리 배정되어 있다면
+    # 해당되는 인스턴스를 찾는다.
+    lectureRoom = None
+    if data[-2] != "" and data[-2] != "X":
+        for r in roomsForPractice:
+            if data[-2] == r.name:
+                lectureRoom = r
+                break
+        # 위에서 찾지 못했다면
+        # 해당 과목은 정보보호개론 or 산업체취창업특강이므로
+        # 담헌실학관 102호를 넣어준다
+        if lectureRoom == None:
+            lectureRoom = roomsForTheory[-1]
 
     # 이론 과목
     subject = Subject(
@@ -59,22 +72,28 @@ def preprocessRoom(data):
         capacity = int(data[1]),
         canPractice = True if data[2] == "o" else False
     )
-    lectureRooms[lectureRoom.name] = lectureRoom
-    lectureRoomsForSorting.append((lectureRoom.capacity, lectureRoom.name))
+
+    if lectureRoom.canPractice:
+        roomsForPractice.append(lectureRoom)
+    else:
+        roomsForTheory.append(lectureRoom)
 
 for room in lectureRoomData[1:]:
     preprocessRoom(room)
-lectureRoomsForSorting.sort()
 
 for subject in subjectData[1:]:
     preprocessSubject(subject)
 
 if __name__ == "__main__":
-    print("------------------Room-------------------")
-    for k, v in lectureRooms.items():
-        v.printDetail()
-    for room in lectureRoomsForSorting:
-        print(room)
+    print("------------------TheoryRoom-------------------")
+    for r in roomsForTheory:
+        r.printDetail()
+        print("---------------------")
+
+    print("------------------PracticeRoom-------------------")
+    for r in roomsForPractice:
+        r.printDetail()
+        print("---------------------")
 
     print("------------------TheorySubject----------------")
     for k, v in theorySubjects.items():

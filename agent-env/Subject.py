@@ -1,6 +1,5 @@
 from Day import Day
 from csv_process import subjectData
-from environment import *
 
 class Subject:
     def __init__(self, name, time, isPractice, number, capacity, lectureRoom, startTime):
