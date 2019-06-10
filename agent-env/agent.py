@@ -13,6 +13,9 @@ timeDomain = [ 9 + i for i in range(8) ]
 theoryRoomDomain = roomsForTheory[:-1]
 practiceRoomDomain = roomsForPractice
 
+def rotate(lst, n):
+    return lst[-n:] + lst[:-n]
+
 # 강의시간을 배정한다.
 # @param
 # subject : 과목
@@ -20,12 +23,16 @@ practiceRoomDomain = roomsForPractice
 # @return
 # 배정에 성공한 경우 True를 반환한다.
 def assignTime(subject, room):
+    random.shuffle(dayDomain)
+
     for day in dayDomain:
         # 실습 과목일 경우, 이론 수업과 다른 날짜인가?
         if subject.isPractice and isSameAsTheory(subject, day):
             continue
 
-        for time in timeDomain:
+        for i in range(50):
+            time = random.choice(timeDomain)
+            
             # 점심시간인가?
             if isNoon(time):
                 continue
@@ -48,9 +55,8 @@ def assignRoom(domain, subject):
     if subject.lectureRoom:
         return assignTime(subject, subject.lectureRoom)
 
-    for i in range(len(domain) * 2):
-        room = random.choice(domain)
-        
+    random.shuffle(domain)
+    for room in domain:
         # 강의실이 수용할 수 있는가?
         if hasMoreCapacity(subject, room) == False:
             continue
@@ -93,4 +99,5 @@ print("------------Practice Done---------------")
 
 lines = Subject.toListForCsv(theorySubjects, practiceSubjects)
 #writeCsvFile("Result1.csv", lines)
-writeCsvFile("Result2.csv", lines)
+#writeCsvFile("Result2.csv", lines)
+writeCsvFile("Result3.csv", lines)
