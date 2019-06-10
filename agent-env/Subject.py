@@ -39,7 +39,7 @@ class Subject:
             t = theory[subjectID]
             p = practice.get(subjectID)
 
-            data[-2] = (t.lectureRoom.name if t.lectureRoom != None else "X") + (' ' + p.lectureRoom.name if p != None else "")
+            data[-2] = (t.lectureRoom.name if t.lectureRoom != None else "X") + ('-' + p.lectureRoom.name if p != None else "")
             data[-1] = t.startTime + (' ' + p.startTime if p != None else "")
 
             lines.append(data)
