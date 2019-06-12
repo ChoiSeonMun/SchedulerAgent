@@ -5,20 +5,25 @@ from PyQt5 import *
 import time
 import csv
 
+f = open('./Result/Result3.csv', 'r', encoding='utf-8')
+rdr = csv.reader(f)
 result_list = []
-with open('Result/Result3.csv', 'r', encoding = 'utf-8') as f:
-        rdr = csv.reader(f)
-        for line in rdr:
-            result_list.append(line)
+for line in rdr:
+    result_list.append(line)
+f.close()
+
 del result_list[0]
+
+i = 0
+for i in range(len(result_list)):
+    print(result_list[i])
 
 #시간표 목록생성
 test_list = []
+i = 0
 for i in range(len(result_list)):
-    line = result_list[i]
-    print(line)
-    s = '%-4d'%i + line[0] + '     ' + line[4]
-    test_list.append(s)
+    str1 = '%-4d'%i + result_list[i][0] + '     ' + result_list[i][4]
+    test_list.append(str1)
 
 #현재 시간표에 넣은 과목이름 저장
 tmp_list = []
@@ -56,7 +61,7 @@ class MyApp(QtWidgets.QDialog):
     def initUI(self):
 
         # 오른쪽 시간표 목록 불러오기
-        self.list_widget = QListWidget()
+        self.list_widget = QtWidgets.QListWidget()
         options = test_list
         self.list_widget.addItems(options)
 #        self.list_widget.itemClicked.connect(self.on_itemClicked)
@@ -190,6 +195,7 @@ class MyApp(QtWidgets.QDialog):
                 if(tmp_list[i] == result_list[num][0]):
                     print("같은 이름의 과목이 이미 넣어져있음")
                     self.NameErr()
+                    del tmp_list[-1]
                     #이미 이름이 같은 과목이 있으므로 0을 반환.
                     return 0
 
